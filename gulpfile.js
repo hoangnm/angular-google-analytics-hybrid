@@ -5,9 +5,9 @@ var browserSync = require('browser-sync').create();
 gulp.task('browsersync', function() {
     browserSync.init({
         server: {
-            baseDir: ["src", "sample"]
+            baseDir: ["src", "sample/web"]
         },
         files: "./**/*.js"
     });
-    gulp.watch("./sample/index.html").on('change', browserSync.reload);
+    gulp.watch("./sample/web/index.html").on('change', browserSync.reload);
 });
