@@ -42,10 +42,7 @@ TokenBucket.prototype = {
   lastDrip: 0,
 
   /**
-   * Remove the requested number of tokens and fire the given callback. If the
-   * bucket (and any parent buckets) contains enough tokens this will happen
-   * immediately. Otherwise, the removal and callback will happen when enough
-   * tokens become available.
+   * Remove the requested number of tokens.
    * @param {Number} count The number of tokens to remove.
    * @returns {Boolean} True if transaction has been accepted, false otherwise
    */
@@ -82,15 +79,19 @@ TokenBucket.prototype = {
   drip: function() {
     if (!this.tokensPerInterval) {
       this.content = this.bucketSize;
-      return;
+      return false;
     }
-
     var now = +new Date();
     var deltaMS = Math.max(now - this.lastDrip, 0);
     this.lastDrip = now;
 
-    var dripAmount = deltaMS * (this.tokensPerInterval / this.interval);
-    this.content = Math.min(this.content + dripAmount, this.bucketSize);
+    if(deltaMS > this.interval) {
+      var dripAmount = deltaMS * (this.tokensPerInterval / this.interval);
+      this.content = Math.min(this.content + dripAmount, this.bucketSize);
+      return true;
+    } else {
+      return false;
+    }
   }
 };
 

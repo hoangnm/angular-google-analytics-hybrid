@@ -7,7 +7,7 @@
     $httpProvider.defaults.headers.patch = {};
   })
   .provider('ga', function() {
-    var limiter = new RateLimiter(60, 2000);
+    var limiter = new RateLimiter(20, 2, 1000);
     var extend = angular.extend;
     var hasInit = false;
     var gaUrl = 'http://www.google-analytics.com/collect';
