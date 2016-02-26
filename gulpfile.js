@@ -1,0 +1,13 @@
+var gulp        = require('gulp');
+var browserSync = require('browser-sync').create();
+
+// Static server
+gulp.task('browsersync', function() {
+    browserSync.init({
+        server: {
+            baseDir: ["src", "sample"]
+        },
+        files: "./**/*.js"
+    });
+    gulp.watch("./sample/index.html").on('change', browserSync.reload);
+});
