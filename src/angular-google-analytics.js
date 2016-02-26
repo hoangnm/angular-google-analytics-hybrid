@@ -122,5 +122,22 @@
       init: init,
       $get: $get
     }
+  })
+  .directive('analyticsOn', function(ga) {
+    return {
+      restrict: 'A',
+      link: function($scope, $element, $attrs) {
+        var eventType = $attrs.analyticsOn || 'click';
+        $element.on(eventType, function ($event) {
+          var eventName = $attrs.analyticsEvent || eventType;
+          var eventCategory = $attrs.analyticsCategory || 'mobile';
+          var eventLabel = $attrs.analyticsLabel;
+          var eventValue = $attrs.analyticsValue;
+          $scope.$apply(function() {
+            ga.trackEvent(eventName, eventCategory, eventLabel, eventValue);
+          });
+        });
+      }
+    }
   });
 })();
