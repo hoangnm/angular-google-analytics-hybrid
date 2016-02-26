@@ -7,6 +7,7 @@
     $httpProvider.defaults.headers.patch = {};
   })
   .provider('ga', function() {
+    var limiter = new RateLimiter(60, 2000);
     var extend = angular.extend;
     var hasInit = false;
     var gaUrl = 'http://www.google-analytics.com/collect';
@@ -69,34 +70,46 @@
         });
       }
 
+      function _callLimiter(cb) {
+        if(limiter.accept(1)) {
+          cb();
+        }
+      }
+
       function trackScreenView(screenName) {
         if(!hasInit) return;
-        var params = extend({}, defaultsParams);
-        params.t = HITTYPES.SCREENVIEW;
-        params.cd = screenName;
-        _postData(params);
+        _callLimiter(function() {
+          var params = extend({}, defaultsParams);
+          params.t = HITTYPES.SCREENVIEW;
+          params.cd = screenName;
+          _postData(params);
+        });
       }
 
       function trackEvent(action, category, label, value) {
         if(!hasInit) return;
-        var params = extend({}, defaultsParams);
-        params.t = HITTYPES.EVENT;
-        params.ea = action;
-        params.ec = category;
-        if(label) params.el = label;
-        if(value) params.ev = value;
-        _postData(params);
+        _callLimiter(function() {
+          var params = extend({}, defaultsParams);
+          params.t = HITTYPES.EVENT;
+          params.ea = action;
+          params.ec = category;
+          if(label) params.el = label;
+          if(value) params.ev = value;
+          _postData(params);
+        });
       }
 
       function trackTiming(category, lookup, time, label) {
         if(!hasInit) return;
-        var params = extend({}, defaultsParams);
-        params.t = HITTYPES.TIMING;
-        params.utc = category;
-        params.utv = lookup;
-        params.utt = time;
-        if(label) params.label = label;
-        _postData(params);
+        _callLimiter(function() {
+          var params = extend({}, defaultsParams);
+          params.t = HITTYPES.TIMING;
+          params.utc = category;
+          params.utv = lookup;
+          params.utt = time;
+          if(label) params.label = label;
+          _postData(params);
+        });
       }
 
       return {
