@@ -36,10 +36,10 @@
     }
 
     function _generateCustomerId() {
-      var cid = window.localStorage.getItem('cid');
+      var cid = window.localStorage.getItem('analytics-cid');
       if(!cid) {
         cid = (window.device && window.device.uuid) || _generateUUID();
-        window.localStorage.setItem('cid', cid);
+        window.localStorage.setItem('analytics-cid', cid);
       }
       return cid;
     }
