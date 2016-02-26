@@ -107,7 +107,7 @@
           params.utc = category;
           params.utv = lookup;
           params.utt = time;
-          if(label) params.label = label;
+          if(label) params.utl = label;
           _postData(params);
         });
       }
