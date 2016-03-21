@@ -25,6 +25,9 @@
       TIMING: 'timing'
     };
 
+    // hold list of timings tracking start point
+    var timings = {};
+
     function init(gaId, packageName, appName, appVersion) {
       if(hasInit) return;
       defaultsParams.tid = gaId;
@@ -112,10 +115,24 @@
         });
       }
 
+      function startTiming(key) {
+        timings[key] = Date.now();
+      }
+
+      function sendTiming(key, category, lookup, label) {
+        if(timings[key]) {
+          var timeHavePassed = Date.now() - timings[key];
+          trackTiming(category, lookup, timeHavePassed, label);
+          timings[key] = null;
+        }
+      }
+
       return {
         trackScreenView: trackScreenView,
         trackEvent: trackEvent,
-        trackTiming: trackTiming
+        trackTiming: trackTiming,
+        startTiming: startTiming,
+        sendTiming: sendTiming
       };
     }
     return {
