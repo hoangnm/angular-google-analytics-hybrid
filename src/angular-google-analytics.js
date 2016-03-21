@@ -97,7 +97,7 @@
           params.ea = action;
           params.ec = category;
           if(label) params.el = label;
-          if(value) params.ev = value;
+          if(value != null) params.ev = value;
           _postData(params);
         });
       }
@@ -122,6 +122,7 @@
       function sendTiming(key, category, lookup, label) {
         if(timings[key]) {
           var timeHavePassed = Date.now() - timings[key];
+          category = category || key;
           trackTiming(category, lookup, timeHavePassed, label);
           timings[key] = null;
         }
@@ -148,8 +149,8 @@
         $element.on(eventType, function ($event) {
           var eventName = $attrs.analyticsEvent || eventType;
           var eventCategory = $attrs.analyticsCategory || 'mobile';
-          var eventLabel = $attrs.analyticsLabel;
-          var eventValue = $attrs.analyticsValue;
+          var eventLabel = $attrs.analyticsLabel || 'default';
+          var eventValue = $attrs.analyticsValue || 0;
           $scope.$apply(function() {
             ga.trackEvent(eventName, eventCategory, eventLabel, eventValue);
           });
