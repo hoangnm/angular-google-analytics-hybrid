@@ -14,7 +14,7 @@ var paths = {
 gulp.task('browsersync', function() {
     browserSync.init({
         server: {
-            baseDir: ["src", "sample/web"]
+            baseDir: ["dist", "sample/web"]
         },
         files: "./**/*.js"
     });
