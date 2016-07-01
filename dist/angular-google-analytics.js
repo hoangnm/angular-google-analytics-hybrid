@@ -152,6 +152,12 @@ window.RateLimiter = RateLimiter;
     $httpProvider.defaults.headers.put = {};
     $httpProvider.defaults.headers.patch = {};
   }])
+  .run(["$rootScope", "ga", function($rootScope, ga) {
+    $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+      var screenView = toState.analyticName || toState.name;
+      ga.trackScreenView(screenView);
+    });
+  }])
   .provider('ga', function() {
     $get.$inject = ["$http"];
     var limiter = new RateLimiter(20, 2, 1000);
@@ -286,7 +292,7 @@ window.RateLimiter = RateLimiter;
     return {
       init: init,
       $get: $get
-    }
+    };
   })
   .directive('analyticsOn', ["ga", function(ga) {
     return {

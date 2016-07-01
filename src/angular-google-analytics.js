@@ -6,6 +6,12 @@
     $httpProvider.defaults.headers.put = {};
     $httpProvider.defaults.headers.patch = {};
   })
+  .run(function($rootScope, ga) {
+    $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+      var screenView = toState.analyticName || toState.name;
+      ga.trackScreenView(screenView);
+    });
+  })
   .provider('ga', function() {
     var limiter = new RateLimiter(20, 2, 1000);
     var extend = angular.extend;
@@ -139,7 +145,7 @@
     return {
       init: init,
       $get: $get
-    }
+    };
   })
   .directive('analyticsOn', function(ga) {
     return {
